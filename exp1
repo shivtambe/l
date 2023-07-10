@@ -1,0 +1,131 @@
+1(a) Lex program to recognize a valid arithmetic expression and to recognize the identifiers and
+operators present. Print them separately.
+***************************************************************************************
+%{
+#include<stdio.h>
+int oprc=0,idc=0,digc=0,top=-1;
+char s[20];
+%}
+iden [a-zA-Z]+[a-zA-Z0-9]*
+opr [+-/*]
+digit [0-9]+
+%%
+[ \n\t]+
+{;}
+['(']
+{ s[++top]='('; }
+[')']
+{
+if(s[top]=='(' && top!=-1)
+top--;
+else
+{
+printf("\nInvalid Expression.\n");
+exit(0);
+}
+}
+{iden}
+{idc++;}
+{digit}
+{digc++;}
+{opr}
+{oprc++;}
+.
+{
+printf("\nInvalid Expression.\n");
+exit(0);
+}
+%%
+main()
+{
+system("clear");
+printf("Enter an Arithmetic Expression:\n");
+yylex();
+if(((idc+digc)==oprc+1)&&top==-1)
+{
+printf("\nValid Expression.\n");
+printf("\nNumber of Operators= %d\nNumber of Identifiers= %d\nNumber of
+Digits= %d\n",oprc,idc,digc);
+}
+BLLDEACET/LM/CS/18CSL66
+Page 1SYSTEM SOFTWARE LABARATORY. (18CSL66)
+else
+printf("\nInvalid Expression.\n");
+}
+yywrap()
+{}
+Execution:
+[root@cse1bldea ssw]# lex 2a.lex
+[root@cse1bldea ssw]# cc lex.yy.c
+[root@cse1bldea ssw]# ./a.out
+Output:
+I.
+Enter an Arithmetic Expression:
+((a+b)-c*9)/2
+Valid Expression.
+Number of Operators= 4
+Number of Identifiers= 3
+Number of Digits= 2
+II.
+Enter an Arithmetic Expression:
+((a+b)-c
+Invalid Expression.
+BLLDEACET/LM/CS/18CSL66
+Page 2SYSTEM SOFTWARE LABARATORY. (18CSL66)
+1(b) YACC program to evaluate an arithmetic expression involving operators +, -, * and /.
+**************************************************************************************
+%{
+#include<stdio.h>
+#include<stdlib.h>
+%}
+%token num
+%%
+START: expr '\n' {printf("\nValue= %d\n",$$); exit(0);}
+| error {printf("\nInvalid Expression.\n"); exit(0);}
+;
+expr: expr '+' term {$$=$1+$3;}
+| expr '-' term {$$=$1-$3;}
+|term
+;
+term: term '*' factor {$$=$1*$3;}
+| term '/' factor {$$=$1/$3;}
+| factor
+;
+factor: '(' expr ')' {$$=$2;}
+| num
+;
+%%
+main()
+{
+system("clear");
+printf("Enter an Arithmetic Expression to Evaluate:\n");
+yyparse();
+}
+yyerror()
+{}
+yylex()
+{
+int c;
+c=getchar();
+if(isdigit(c))
+{
+yylval=c-'0';
+return num;
+}
+return c;
+}
+BLLDEACET/LM/CS/18CSL66
+Page 3SYSTEM SOFTWARE LABARATORY. (18CSL66)
+Execution:
+[root@cse1bldea ssw]# yacc -d 5a.yacc
+[root@cse1bldea ssw]# cc y.tab.c
+[root@cse1bldea ssw]# ./a.out
+Output:
+I.
+Enter an Arithmetic Expression to Evaluate:
+((2+3)*5)+5
+Value= 30
+II.
+Enter an Arithmetic Expression to Evaluate:
+(2++3)
+Invalid Expression.

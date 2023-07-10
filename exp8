@@ -1,0 +1,89 @@
+8. Design, develop and run a program to implement the Banker’s Algorithm. Demonstrate its working
+with different data values.
+***************************************************************************************
+# include<stdio.h>
+//# include<conio.h>
+# include<stdlib.h>
+# include<string.h>
+# define MAX 10
+struct process
+{
+char pid[4];
+int maxneed[3];
+int altd[3];
+int need[3];
+int finish;
+}p[MAX];
+int avl[3];
+char safe[10][4];
+void bankers(int n);
+void main()
+{
+int n,i;
+//clrscr();
+printf("How many processes?");
+scanf("%d",&n);
+printf("Enter processes");
+for(i=0;i<n;i++)
+{
+printf("\nEnter pid:");
+scanf("%s",&p[i].pid);
+printf("Enter maxneed:");
+scanf("%d%d%d",&p[i].maxneed[0],&p[i].maxneed[1],&p[i].maxneed[2]);
+printf("Enter allocated:");
+scanf("%d%d%d",&p[i].altd[0],&p[i].altd[1],&p[i].altd[2]);
+p[i].finish=0;
+}
+printf("Enter available resources:");
+scanf("%d%d%d",&avl[0],&avl[1],&avl[2]);
+bankers(n);
+//getch();
+}
+void bankers(int n)
+{
+int i,k=0;
+int j=0,m;
+int count=0;
+BLLDEACET/LM/CS/18CSL66
+Page 29SYSTEM SOFTWARE LABARATORY. (18CSL66)
+m=n*n;
+for(i=0;i<n;i++)
+{
+p[i].need[0]=p[i].maxneed[0]-p[i].altd[0];
+p[i].need[1]=p[i].maxneed[1]-p[i].altd[1];
+p[i].need[2]=p[i].maxneed[2]-p[i].altd[2];
+}
+while(k<=m)
+{
+for(i=0;i<n;i++)
+{
+if(p[i].finish!=1 && p[i].need[0]<=avl[0] && p[i].need[1]<=avl[1] && p[i].need[2]<=avl[2])
+{
+strcpy(safe[j],p[i].pid);
+j++;
+count++;
+p[i].finish=1;
+avl[0]+=p[i].altd[0];
+avl[1]+=p[i].altd[1];
+avl[2]+=p[i].altd[2];
+}
+else
+{
+continue;
+}
+}
+k++;
+}
+if(count==n)
+{
+printf("\nState is safe that is:\n");
+for(i=0;i<n;i++)
+{
+printf("%s",safe[i]);
+}
+}
+else
+{
+printf("\n\t !deadlock occur");
+}
+}

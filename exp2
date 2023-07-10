@@ -1,0 +1,58 @@
+2. YACC program to recognize the grammar (anb) (where n>= 10).
+**************************************************************************************
+%{
+#include<stdio.h>
+#include<stdlib.h>
+%}
+%token A B NEWLINE
+%%
+START: VALID {printf("\nString is Accepted.\n"); exit(0);}
+| error {printf("\nString is Rejected.\n"); exit(0);}
+;
+VALID: S NEWLINE
+;
+S: X B
+;
+X: A A A A A A A A A A
+|A X
+;
+%%
+main()
+{
+system("clear");
+printf("Enter the string of a and b:\n");
+yyparse();
+}
+yyerror()
+{}
+Supporting Lex Program:
+%{
+#include<stdio.h>
+#include"y.tab.h"
+%}
+%%
+[a]
+{return A;}
+[b]
+{return B;}
+[\n]
+{return NEWLINE;}
+%%
+yywrap()
+{}
+BLLDEACET/LM/CS/18CSL66
+Page 5SYSTEM SOFTWARE LABARATORY. (18CSL66)
+Execution:
+[root@cse1bldea ssw]# lex 6.lex
+[root@cse1bldea ssw]# yacc -d 6.yacc
+[root@cse1bldea ssw]# cc y.tab.c lex.yy.c
+[root@cse1bldea ssw]# ./a.out
+Output:
+I.
+Enter the string of a and b:
+aab
+String is Rejected.
+II.
+Enter the string of a and b:
+aaaaaaaaaab
+String is Accepted.

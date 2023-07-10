@@ -1,0 +1,137 @@
+7. Design, develop and execute a program in C/C++ to simulate the working of Shortest Remaining
+time and Round Robin Scheduling algorithms. Experiment with different Quantum sizes for the
+Round Robin algorithm. In all cases, determine the average turn Around time. Input can be read
+from keyboard or from a file.
+***************************************************************************************
+#include<stdio.h>
+#include<conio.h>
+void roundrobin();
+void srtf();
+main()
+{
+int choice;
+printf("Enter the choice \n");
+printf(" 1. Round Robin\n 2. SRTF\n 3. Exit \n");
+scanf("%d",&choice);
+switch(choice)
+{
+case 1:
+printf("Round Robin scheduling algorithm\n");
+roundrobin();
+break;
+case 2:
+printf("\n \n ---SHORTEST REMAINING TIME NEXT---\n \n ");
+srtf();
+break;
+case 3: exit(0);
+}
+}//end of main
+void roundrobin()
+{
+int n,bt[10],st[10],tat[10],tq,stat=0;
+int i,j,k,count,sq=0,temp;
+float atat=0.0;
+printf("Enter number of processes:\n");
+scanf("%d",&n);
+for(i=0;i<n;i++)
+{
+printf("Enter burst time for process :",i);
+scanf("%d",&bt[i]);
+st[i]=bt[i]; //service time
+}
+printf("\n enter time quantum:");
+scanf("%d",&tq);
+BLLDEACET/LM/CS/18CSL66
+Page 25SYSTEM SOFTWARE LABARATORY. (18CSL66)
+while(1)
+{ for(i=0,count=0;i<n;i++)
+{
+temp=tq;
+if(st[i]==0) // when service time of a process equals zero then count value is incremented
+{
+count++;
+continue;
+}
+if(st[i]>tq) // when service time of a process greater than time quantum then time
+st[i]=st[i]-tq; //quantum value subtracted from service time
+else
+if(st[i]>=0)
+{
+temp=st[i]; // temp1 stores the service time of a process
+st[i]=0;
+// making service time equals 0
+}
+sq=sq+temp;
+// utilizing temp1 value to calculate turnaround time
+tat[i]=sq;
+// turn around time
+} //end of for
+if(n==count)
+// it indicates all processes have completed their task because the count value
+break;
+// incremented when service time equals 0
+} //end of while
+for(i=0;i<n;i++)
+// to calculate the turnaround time of each process
+{
+stat=stat+tat[i];
+// summation of turnaround time
+}
+atat=(float)stat/n;
+// average turnaround time
+printf("Process_no Burst time
+Turn around time\n");
+for(i=0;i<n;i++)
+printf("%d\t\t%d\t\t%d\n",i+1,bt[i],tat[i]);
+printf("Avg turn around time is %f\n",atat);
+getch();
+}// end of Round Robin
+void srtf()
+{
+struct srtf1
+{
+int job;
+int bt;
+};
+BLLDEACET/LM/CS/18CSL66
+Page 26SYSTEM SOFTWARE LABARATORY. (18CSL66)
+struct srtf1 s[10],temp;
+int tat[10],stat=0,i,j,n;
+float atat=0.0;
+printf("\n Enter the Number of processes:");
+scanf("%d",&n);
+for(i=0;i<n;i++)
+{
+printf("\n Enter process no and Burst Time:");
+scanf("%d%d",&s[i].job,&s[i].bt);
+}
+//sorting based on size
+for(i=0;i<n;i++)
+for(j=i+1;j<n;j++)
+{
+if(s[i].bt>s[j].bt)
+{
+temp=s[i];
+s[i]=s[j];
+s[j]=temp;
+}
+}
+//turnaround time calculation
+tat[0]=s[0].bt;
+for(i=1;i<n;i++)
+{
+tat[i]=tat[i-1]+s[i].bt;
+}
+//total(sum) turnaround time
+for(i=0;i<n;i++)
+{
+stat+=tat[i];
+}
+atat=(float)stat/n;
+printf("\n \tJob\tBurst Time\t ttat");
+for(i=0;i<n;i++)
+printf("\n\t%d \t%d \t\t%d ",s[i].job,s[i].bt,tat[i]);
+printf("\n Total Turnaround Time : %d",stat);
+printf("\n Average ttat : %f",atat);
+getch();
+}
